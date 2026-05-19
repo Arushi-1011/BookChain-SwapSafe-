@@ -23,10 +23,42 @@
 
   <!-- App shell — we'll fill this in Phase 2 -->
   <div id="app">
-    <p style="padding: 2rem; font-family: sans-serif; color: #555;">
-      BookChain is loading… ✅ Phase 1 complete.
-    </p>
-  </div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="navbar__logo" onclick="showPage('browse')">
+      <div class="navbar__logo-icon">
+        <i class="ti ti-books"></i>
+      </div>
+      <div>
+        <div class="navbar__logo-text">BookChain</div>
+        <div class="navbar__logo-sub">SwapSafe</div>
+      </div>
+    </div>
+
+    <div class="navbar__tabs" id="nav-tabs">
+      <button class="navbar__tab active" data-page="browse">Browse</button>
+      <button class="navbar__tab" data-page="swaps">My Swaps</button>
+      <button class="navbar__tab" data-page="list">List a Book</button>
+      <button class="navbar__tab" data-page="profile">Profile</button>
+    </div>
+
+    <div class="navbar__right">
+      <button class="navbar__icon-btn" aria-label="Notifications">
+        <i class="ti ti-bell"></i>
+        <span class="navbar__notif-dot"></span>
+      </button>
+      <div class="navbar__avatar">AK</div>
+    </div>
+  </nav>
+
+  <!-- PAGES -->
+  <div id="page-browse"  class="page active"><h2>Browse — coming Phase 3</h2></div>
+  <div id="page-swaps"   class="page"><h2>Swaps — coming Phase 5</h2></div>
+  <div id="page-list"    class="page"><h2>List a Book — coming Phase 4</h2></div>
+  <div id="page-profile" class="page"><h2>Profile — coming Phase 6</h2></div>
+
+</div>
 
   <!-- JS -->
   <script src="js/data.js"></script>
