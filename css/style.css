@@ -424,3 +424,164 @@ body {
   color: var(--color-text-muted);
   font-size: 15px;
 }
+/* ── List a Book Page ───────────────────────────── */
+.list-header {
+  margin-bottom: 24px;
+}
+
+.list-header__title {
+  font-family: var(--font-display);
+  font-size: 26px;
+  color: var(--color-text);
+  margin-bottom: 4px;
+}
+
+.list-header__sub {
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+/* Success banner */
+.success-banner {
+  display: none;
+  align-items: center;
+  gap: 14px;
+  background: var(--color-teal-lt);
+  border: 1px solid #9FE1CB;
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  font-size: 14px;
+  color: #085041;
+}
+
+.success-banner i {
+  font-size: 24px;
+  color: var(--color-teal);
+  flex-shrink: 0;
+}
+
+.success-banner p {
+  font-size: 13px;
+  margin-top: 2px;
+  opacity: 0.8;
+}
+
+.success-banner.visible {
+  display: flex;
+}
+
+/* Form layout */
+.list-form {
+  max-width: 640px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  margin-bottom: 6px;
+}
+
+.required { color: var(--color-coral); }
+.optional { font-weight: 400; color: var(--color-text-muted); font-size: 12px; }
+
+.form-input {
+  width: 100%;
+  padding: 10px 13px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  font-size: 14px;
+  color: var(--color-text);
+  font-family: var(--font-body);
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.form-input:focus {
+  border-color: var(--color-primary-mid);
+}
+
+.form-input.error {
+  border-color: var(--color-coral);
+}
+
+.form-textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.form-error {
+  display: none;
+  font-size: 12px;
+  color: var(--color-coral);
+  margin-top: 4px;
+}
+
+.form-error.visible {
+  display: block;
+}
+
+/* Condition picker */
+.condition-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.cond-option {
+  padding: 14px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.15s;
+  background: var(--color-bg);
+}
+
+.cond-option:hover {
+  border-color: var(--color-primary-mid);
+}
+
+.cond-option.selected {
+  border-color: #FAC775;
+  background: var(--color-primary-lt);
+}
+
+.cond-option__icon { font-size: 22px; margin-bottom: 6px; }
+.cond-option__name { font-size: 13px; font-weight: 500; }
+.cond-option__desc { font-size: 11px; color: var(--color-text-muted); margin-top: 3px; }
+
+/* Submit button */
+.submit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 28px;
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: var(--radius-md);
+  font-size: 15px;
+  font-weight: 500;
+  font-family: var(--font-body);
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s;
+  margin-top: 4px;
+}
+
+.submit-btn:hover {
+  background: var(--color-primary-mid);
+}

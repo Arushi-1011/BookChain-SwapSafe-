@@ -89,3 +89,84 @@ document.getElementById('condition-pills').addEventListener('click', e => {
 
 // Initial render
 renderBooks(BOOKS);
+// ── List a Book Page ────────────────────────────────────────
+
+// Condition picker
+document.getElementById('condition-picker').addEventListener('click', e => {
+  const option = e.target.closest('.cond-option');
+  if (!option) return;
+  document.querySelectorAll('.cond-option').forEach(o => o.classList.remove('selected'));
+  option.classList.add('selected');
+});
+
+function getSelectedCondition() {
+  const selected = document.querySelector('.cond-option.selected');
+  return selected ? selected.dataset.value : 'like-new';
+}
+
+// Validation helper
+function validateField(inputId, errorId) {
+  const input = document.getElementById(inputId);
+  const error = document.getElementById(errorId);
+  const empty = !input.value.trim();
+  input.classList.toggle('error', empty);
+  error.classList.toggle('visible', empty);
+  return !empty;
+}
+
+function submitListing(e) {
+  e.preventDefault();
+
+  // Validate required fields
+  const valid = [
+    validateField('f-title',   'err-title'),
+    validateField('f-author',  'err-author'),
+    validateField('f-subject', 'err-subject'),
+    validateField('f-campus',  'err-campus'),
+  ].every(Boolean);
+
+  if (!valid) return;
+
+  // Build the new book object
+  const newBook = {
+    id:            Date.now(),
+    title:         document.getElementById('f-title').value.trim(),
+    author:        document.getElementById('f-author').value.trim(),
+    subject:       document.getElementById('f-subject').value,
+    condition:     getSelectedCondition(),
+    campus:        document.getElementById('f-campus').value.trim(),
+    wantInReturn:  document.getElementById('f-want').value.trim(),
+    notes:         document.getElementById('f-notes').value.trim(),
+    emoji:         '📚',
+    owner:         'You',
+    ownerInitials: 'ME',
+    ownerColor:    '#854F0B',
+  };
+
+  // Save to localStorage
+  const saved = JSON.parse(localStorage.getItem('bookchain_books') || '[]');
+  saved.push(newBook);
+  localStorage.setItem('bookchain_books', JSON.stringify(saved));
+
+  // Add to the live BOOKS array so Browse updates instantly
+  BOOKS.unshift(newBook);
+
+  // Reset form
+  document.getElementById('list-form').reset();
+  document.querySelectorAll('.cond-option').forEach(o => o.classList.remove('selected'));
+  document.querySelector('.cond-option[data-value="like-new"]').classList.add('selected');
+
+  // Show success banner
+  const banner = document.getElementById('success-banner');
+  banner.classList.add('visible');
+  setTimeout(() => banner.classList.remove('visible'), 4000);
+}
+
+// Load any previously listed books from localStorage on startup
+function loadSavedBooks() {
+  const saved = JSON.parse(localStorage.getItem('bookchain_books') || '[]');
+  saved.forEach(b => BOOKS.unshift(b));
+}
+
+loadSavedBooks();
+renderBooks(BOOKS);
