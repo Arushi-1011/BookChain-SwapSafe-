@@ -2,15 +2,15 @@
 
 // Page routing
 function showPage(id) {
-  // hide all pages
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  // show target
   document.getElementById('page-' + id).classList.add('active');
 
-  // update nav tab highlight
   document.querySelectorAll('.navbar__tab').forEach(tab => {
     tab.classList.toggle('active', tab.dataset.page === id);
   });
+
+  // init pages that need it
+  if (id === 'swaps') initSwapsPage();
 }
 
 // Wire up nav tab clicks
@@ -170,3 +170,137 @@ function loadSavedBooks() {
 
 loadSavedBooks();
 renderBooks(BOOKS);
+// ── My Swaps Page ───────────────────────────────────────────
+
+const STEP_LABELS = ['Requested', 'Matched', 'Meetup set', 'Done'];
+
+function dotClass(steps, index) {
+  if (steps[index]) {
+    // last true step and not all done = active pulse
+    const lastTrue = steps.lastIndexOf(true);
+    if (index === lastTrue && !steps.every(Boolean)) return 'dot--active';
+    return 'dot--done';
+  }
+  return 'dot--pending';
+}
+
+function renderSwaps(tab) {
+  const list = SWAPS[tab];
+  const container = document.getElementById('swaps-list');
+
+  if (!list || !list.length) {
+    container.innerHTML = '<p class="no-swaps">No swaps here yet.</p>';
+    return;
+  }
+
+  container.innerHTML = list.map(swap => `
+    <div class="swap-card" id="swap-${swap.id}">
+
+      <div class="swap-card__top">
+        <!-- Their book -->
+        <div class="swap-book">
+          <div class="swap-book__cover">${swap.theirBook.emoji}</div>
+          <div>
+            <div class="swap-book__title">${swap.theirBook.title}</div>
+            <div class="swap-book__label">from <strong>${swap.from}</strong></div>
+          </div>
+        </div>
+
+        <div class="swap-arrow">⇄</div>
+
+        <!-- Your book -->
+        <div class="swap-book">
+          <div class="swap-book__cover">${swap.myBook.emoji}</div>
+          <div>
+            <div class="swap-book__title">${swap.myBook.title}</div>
+            <div class="swap-book__label">your book</div>
+          </div>
+        </div>
+
+        <span class="swap-status status--${swap.status}">
+          ${swap.status.charAt(0).toUpperCase() + swap.status.slice(1)}
+        </span>
+      </div>
+
+      <!-- Timeline -->
+      <div class="swap-timeline">
+        ${STEP_LABELS.map((label, i) => `
+          <div class="timeline-step ${swap.steps[i] ? 'done' : ''}">
+            <div class="timeline-dot ${dotClass(swap.steps, i)}"></div>
+            <div class="timeline-label">${label}</div>
+          </div>
+        `).join('')}
+      </div>
+
+      <!-- Actions -->
+      ${swap.status === 'pending' ? `
+        <div class="swap-actions">
+          <button class="btn-accept" onclick="acceptSwap(${swap.id})">
+            <i class="ti ti-check"></i> Accept
+          </button>
+          <button class="btn-message" onclick="messageUser('${swap.from}')">
+            <i class="ti ti-message"></i> Message
+          </button>
+          <button class="btn-decline" onclick="declineSwap(${swap.id})">
+            Decline
+          </button>
+        </div>
+      ` : swap.status === 'active' ? `
+        <div class="swap-actions">
+          <button class="btn-message" onclick="messageUser('${swap.from}')">
+            <i class="ti ti-message"></i> Message
+          </button>
+          <button class="btn-accept" onclick="completeSwap(${swap.id})">
+            <i class="ti ti-circle-check"></i> Mark as Complete
+          </button>
+        </div>
+      ` : ''}
+
+    </div>
+  `).join('');
+}
+
+// Tab switching
+document.getElementById('swap-tabs').addEventListener('click', e => {
+  const tab = e.target.closest('.swap-tab');
+  if (!tab) return;
+  document.querySelectorAll('.swap-tab').forEach(t => t.classList.remove('active'));
+  tab.classList.add('active');
+  renderSwaps(tab.dataset.tab);
+});
+
+// Actions
+function acceptSwap(id) {
+  const swap = SWAPS.incoming.find(s => s.id === id);
+  if (!swap) return;
+  swap.status = 'active';
+  swap.steps[1] = true;
+  renderSwaps('incoming');
+}
+
+function declineSwap(id) {
+  SWAPS.incoming = SWAPS.incoming.filter(s => s.id !== id);
+  renderSwaps('incoming');
+  // update tab count
+  document.querySelector('.swap-tab[data-tab="incoming"] .swap-tab__count').textContent =
+    SWAPS.incoming.length;
+}
+
+function completeSwap(id) {
+  const swap = SWAPS.outgoing.find(s => s.id === id);
+  if (!swap) return;
+  swap.status = 'completed';
+  swap.steps = [true, true, true, true];
+  SWAPS.completed.unshift(swap);
+  SWAPS.outgoing = SWAPS.outgoing.filter(s => s.id !== id);
+  renderSwaps('outgoing');
+}
+
+function messageUser(name) {
+  alert(`Messaging ${name} — chat UI coming in Phase 7 polish!`);
+}
+
+// Render incoming by default when swaps page is visited
+function initSwapsPage() {
+  renderSwaps('incoming');
+}

@@ -118,7 +118,30 @@
   <div class="book-grid" id="book-grid"></div>
 
 </div>
-  <div id="page-swaps"   class="page"><h2>Swaps — coming Phase 5</h2></div>
+  <div id="page-swaps" class="page">
+
+  <div class="swaps-header">
+    <h2 class="swaps-header__title">My Swaps</h2>
+    <p class="swaps-header__sub">Track all your incoming and outgoing book exchange requests.</p>
+  </div>
+
+  <!-- Tabs -->
+  <div class="swap-tabs" id="swap-tabs">
+    <button class="swap-tab active" data-tab="incoming">
+      Incoming <span class="swap-tab__count">2</span>
+    </button>
+    <button class="swap-tab" data-tab="outgoing">
+      Outgoing <span class="swap-tab__count">1</span>
+    </button>
+    <button class="swap-tab" data-tab="completed">
+      Completed <span class="swap-tab__count">2</span>
+    </button>
+  </div>
+
+  <!-- Swap cards rendered here -->
+  <div id="swaps-list"></div>
+
+</div>
   <div id="page-list" class="page">
 
   <div class="list-header">
