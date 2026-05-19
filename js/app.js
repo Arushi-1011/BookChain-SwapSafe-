@@ -20,3 +20,72 @@ document.getElementById('nav-tabs').addEventListener('click', e => {
 });
 
 console.log('BookChain Phase 2 ✅ — routing ready');
+// ── Browse Page ─────────────────────────────────────────────
+
+let activeCondition = '';
+
+function renderBooks(list) {
+  const grid = document.getElementById('book-grid');
+  if (!list.length) {
+    grid.innerHTML = '<p class="no-results">No books match your search. Try different filters.</p>';
+    return;
+  }
+
+  grid.innerHTML = list.map((book, i) => `
+    <div class="book-card">
+      <div class="book-card__cover" style="background: ${COVER_COLORS[i % COVER_COLORS.length]}">
+        <span>${book.emoji}</span>
+        <span class="book-card__condition cond--${book.condition}">
+          ${book.condition === 'like-new' ? 'Like New' : book.condition.charAt(0).toUpperCase() + book.condition.slice(1)}
+        </span>
+      </div>
+      <div class="book-card__body">
+        <div class="book-card__title">${book.title}</div>
+        <div class="book-card__author">${book.author}</div>
+        <div class="book-card__footer">
+          <span class="book-card__subject">${book.subject}</span>
+          <div class="book-card__owner">
+            <div class="book-card__owner-av" style="background: ${book.ownerColor}">${book.ownerInitials}</div>
+            ${book.owner}
+          </div>
+        </div>
+        <button class="book-card__swap-btn" onclick="requestSwap(${book.id})">
+          <i class="ti ti-arrows-exchange"></i> Request Swap
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterBooks() {
+  const query   = document.getElementById('search-input').value.toLowerCase();
+  const subject = document.getElementById('subject-filter').value;
+
+  const filtered = BOOKS.filter(b => {
+    const matchQuery   = !query   || b.title.toLowerCase().includes(query) || b.author.toLowerCase().includes(query);
+    const matchSubject = !subject || b.subject === subject;
+    const matchCond    = !activeCondition || b.condition === activeCondition;
+    return matchQuery && matchSubject && matchCond;
+  });
+
+  renderBooks(filtered);
+}
+
+function requestSwap(bookId) {
+  const book = BOOKS.find(b => b.id === bookId);
+  alert(`Swap request sent for "${book.title}" by ${book.owner}!\n\n(Messaging UI coming in Phase 5)`);
+}
+
+// Condition pill clicks
+document.getElementById('condition-pills').addEventListener('click', e => {
+  const pill = e.target.closest('.pill');
+  if (!pill) return;
+
+  document.querySelectorAll('#condition-pills .pill').forEach(p => p.classList.remove('active'));
+  pill.classList.add('active');
+  activeCondition = pill.dataset.condition;
+  filterBooks();
+});
+
+// Initial render
+renderBooks(BOOKS);

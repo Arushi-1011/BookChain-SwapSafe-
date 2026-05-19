@@ -53,7 +53,71 @@
   </nav>
 
   <!-- PAGES -->
-  <div id="page-browse"  class="page active"><h2>Browse — coming Phase 3</h2></div>
+   <div id="page-browse" class="page active">
+
+  <!-- Hero -->
+  <div class="browse-hero">
+    <h1 class="browse-hero__title">Find your next textbook — free.</h1>
+    <p class="browse-hero__sub">Swap directly with fellow students. No middleman, no fees.</p>
+
+    <!-- Search + filter row -->
+    <div class="browse-search-row">
+      <div class="search-wrap">
+        <i class="ti ti-search search-wrap__icon"></i>
+        <input
+          type="text"
+          id="search-input"
+          class="search-wrap__input"
+          placeholder="Search by title, author, or subject…"
+          oninput="filterBooks()"
+        />
+      </div>
+      <select id="subject-filter" class="filter-select" onchange="filterBooks()">
+        <option value="">All subjects</option>
+        <option>Computer Science</option>
+        <option>Mathematics</option>
+        <option>Physics</option>
+        <option>Biology</option>
+        <option>Economics</option>
+        <option>Engineering</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Stats strip -->
+  <div class="stats-strip">
+    <div class="stats-strip__item">
+      <div class="stats-strip__num">1,240</div>
+      <div class="stats-strip__lbl">books listed</div>
+    </div>
+    <div class="stats-strip__item">
+      <div class="stats-strip__num">380</div>
+      <div class="stats-strip__lbl">active swappers</div>
+    </div>
+    <div class="stats-strip__item">
+      <div class="stats-strip__num">₹4.2L</div>
+      <div class="stats-strip__lbl">saved collectively</div>
+    </div>
+    <div class="stats-strip__item">
+      <div class="stats-strip__num">872</div>
+      <div class="stats-strip__lbl">successful swaps</div>
+    </div>
+  </div>
+
+  <!-- Condition filter pills -->
+  <div class="browse-toolbar">
+    <div class="pills" id="condition-pills">
+      <button class="pill active" data-condition="">All</button>
+      <button class="pill" data-condition="like-new">Like New</button>
+      <button class="pill" data-condition="good">Good</button>
+      <button class="pill" data-condition="fair">Fair</button>
+    </div>
+  </div>
+
+  <!-- Book grid -->
+  <div class="book-grid" id="book-grid"></div>
+
+</div>
   <div id="page-swaps"   class="page"><h2>Swaps — coming Phase 5</h2></div>
   <div id="page-list"    class="page"><h2>List a Book — coming Phase 4</h2></div>
   <div id="page-profile" class="page"><h2>Profile — coming Phase 6</h2></div>
