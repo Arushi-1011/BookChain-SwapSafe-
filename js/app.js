@@ -10,7 +10,9 @@ function showPage(id) {
   });
 
   // init pages that need it
-  if (id === 'swaps') initSwapsPage();
+  // init pages that need it
+  if (id === 'swaps')   initSwapsPage();
+  if (id === 'profile') initProfilePage();
 }
 
 // Wire up nav tab clicks
@@ -303,4 +305,76 @@ function messageUser(name) {
 // Render incoming by default when swaps page is visited
 function initSwapsPage() {
   renderSwaps('incoming');
+}
+// ── Profile Page ────────────────────────────────────────────
+
+function renderStars(rating) {
+  return Array.from({ length: 5 }, (_, i) =>
+    `<span style="color: ${i < rating ? '#EF9F27' : '#D3D1C7'}">★</span>`
+  ).join('');
+}
+
+function initProfilePage() {
+  // Avatar & name
+  document.getElementById('profile-avatar').textContent = USER.initials;
+  document.getElementById('profile-name').textContent   = USER.name;
+  document.getElementById('profile-sub').textContent    =
+    `${USER.year} · ${USER.course} · ${USER.campus}`;
+
+  // Trust score
+  document.getElementById('profile-trust').innerHTML =
+    `<i class="ti ti-shield-check" style="font-size:13px"></i> ${USER.trustScore}% Trust Score`;
+
+  // Stats
+  document.getElementById('profile-stats').innerHTML = `
+    <div class="profile-stat">
+      <div class="profile-stat__num">${USER.stats.listed}</div>
+      <div class="profile-stat__lbl">Books Listed</div>
+    </div>
+    <div class="profile-stat">
+      <div class="profile-stat__num">${USER.stats.swapped}</div>
+      <div class="profile-stat__lbl">Swaps Done</div>
+    </div>
+    <div class="profile-stat">
+      <div class="profile-stat__num">${USER.stats.saved}</div>
+      <div class="profile-stat__lbl">Total Saved</div>
+    </div>
+  `;
+
+  // Listed books — seed + any user-added books from localStorage
+  const saved = JSON.parse(localStorage.getItem('bookchain_books') || '[]');
+  const allBooks = [
+    ...saved.map(b => ({ emoji: b.emoji, title: b.title, condition: b.condition })),
+    ...MY_BOOKS,
+  ];
+
+  document.getElementById('profile-books').innerHTML = allBooks.map(b => `
+    <div class="profile-book">
+      <div class="profile-book__emoji">${b.emoji}</div>
+      <div>
+        <div class="profile-book__title">${b.title}</div>
+        <div class="profile-book__cond">${
+          b.condition === 'like-new' ? 'Like New' :
+          b.condition.charAt(0).toUpperCase() + b.condition.slice(1)
+        }</div>
+      </div>
+    </div>
+  `).join('');
+
+  // Reviews
+  document.getElementById('profile-reviews').innerHTML = REVIEWS.map(r => `
+    <div class="review-card">
+      <div class="review-card__header">
+        <div class="review-card__reviewer">
+          <div class="review-card__avatar" style="background: ${r.color}">${r.initials}</div>
+          <div>
+            <div>${r.from}</div>
+            <div class="review-card__date">${r.date}</div>
+          </div>
+        </div>
+        <div class="review-card__stars">${renderStars(r.rating)}</div>
+      </div>
+      <div class="review-card__text">${r.text}</div>
+    </div>
+  `).join('');
 }

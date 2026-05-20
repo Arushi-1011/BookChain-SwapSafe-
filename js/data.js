@@ -183,3 +183,55 @@ const SWAPS = {
     },
   ],
 };
+const USER = {
+  name: "Arushi Kumar",
+  initials: "AK",
+  year: "3rd year",
+  course: "Computer Science",
+  campus: "IIT Bengaluru",
+  trustScore: 98,
+  stats: {
+    listed: 14,
+    swapped: 9,
+    saved: "₹6,200",
+  },
+};
+
+const REVIEWS = [
+  {
+    id: 1,
+    from: "Priya R.",
+    initials: "PR",
+    color: "#1D9E75",
+    rating: 5,
+    text: "Super smooth swap! Book was exactly as described. Would definitely swap again.",
+    date: "12 May 2026",
+  },
+  {
+    id: 2,
+    from: "Sahil M.",
+    initials: "SM",
+    color: "#D85A30",
+    rating: 5,
+    text: "Very responsive, met right on campus. Saved me ₹800 on the CLRS book!",
+    date: "4 May 2026",
+  },
+  {
+    id: 3,
+    from: "Neha K.",
+    initials: "NK",
+    color: "#378ADD",
+    rating: 4,
+    text: "Good condition, slightly more highlights than expected but overall a great swap.",
+    date: "28 Apr 2026",
+  },
+];
+
+const MY_BOOKS = [
+  { emoji: "📘", title: "DBMS – Navathe",       condition: "Like New" },
+  { emoji: "💻", title: "Algorithms – CLRS",    condition: "Good"     },
+  { emoji: "🌐", title: "OS – Tanenbaum",       condition: "Fair"     },
+  { emoji: "📊", title: "CN – Forouzan",        condition: "Good"     },
+  { emoji: "📐", title: "Engg. Maths Vol. 1",   condition: "Like New" },
+  { emoji: "🗂️", title: "Data Structures",      condition: "Good"     },
+];
