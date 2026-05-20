@@ -184,11 +184,11 @@ const SWAPS = {
   ],
 };
 const USER = {
-  name: "Arushi Kumar",
-  initials: "AK",
+  name: "Arushi",
+  initials: "A",
   year: "3rd year",
   course: "Computer Science",
-  campus: "IIT Bengaluru",
+  campus: "Bengaluru",
   trustScore: 98,
   stats: {
     listed: 14,

@@ -29,7 +29,12 @@ let activeCondition = '';
 function renderBooks(list) {
   const grid = document.getElementById('book-grid');
   if (!list.length) {
-    grid.innerHTML = '<p class="no-results">No books match your search. Try different filters.</p>';
+    grid.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state__icon">📭</div>
+        <div class="empty-state__title">No books found</div>
+        <div class="empty-state__sub">Try a different search or clear your filters.</div>
+      </div>`;
     return;
   }
 
@@ -75,7 +80,7 @@ function filterBooks() {
 
 function requestSwap(bookId) {
   const book = BOOKS.find(b => b.id === bookId);
-  alert(`Swap request sent for "${book.title}" by ${book.owner}!\n\n(Messaging UI coming in Phase 5)`);
+  showToast(`Swap request sent to ${book.owner}!`, 'success');
 }
 
 // Condition pill clicks
@@ -119,7 +124,6 @@ function validateField(inputId, errorId) {
 function submitListing(e) {
   e.preventDefault();
 
-  // Validate required fields
   const valid = [
     validateField('f-title',   'err-title'),
     validateField('f-author',  'err-author'),
@@ -127,9 +131,11 @@ function submitListing(e) {
     validateField('f-campus',  'err-campus'),
   ].every(Boolean);
 
-  if (!valid) return;
+  if (!valid) {
+    showToast('Please fill in all required fields.', 'error');
+    return;
+  }
 
-  // Build the new book object
   const newBook = {
     id:            Date.now(),
     title:         document.getElementById('f-title').value.trim(),
@@ -145,23 +151,20 @@ function submitListing(e) {
     ownerColor:    '#854F0B',
   };
 
-  // Save to localStorage
   const saved = JSON.parse(localStorage.getItem('bookchain_books') || '[]');
   saved.push(newBook);
   localStorage.setItem('bookchain_books', JSON.stringify(saved));
-
-  // Add to the live BOOKS array so Browse updates instantly
   BOOKS.unshift(newBook);
 
-  // Reset form
   document.getElementById('list-form').reset();
   document.querySelectorAll('.cond-option').forEach(o => o.classList.remove('selected'));
   document.querySelector('.cond-option[data-value="like-new"]').classList.add('selected');
 
-  // Show success banner
   const banner = document.getElementById('success-banner');
   banner.classList.add('visible');
   setTimeout(() => banner.classList.remove('visible'), 4000);
+
+  showToast('Book listed! Students can now request a swap.', 'success');
 }
 
 // Load any previously listed books from localStorage on startup
@@ -299,7 +302,7 @@ function completeSwap(id) {
 }
 
 function messageUser(name) {
-  alert(`Messaging ${name} — chat UI coming in Phase 7 polish!`);
+  showToast(`Opening chat with ${name}… (coming soon)`, 'success');
 }
 
 // Render incoming by default when swaps page is visited
@@ -377,4 +380,19 @@ function initProfilePage() {
       <div class="review-card__text">${r.text}</div>
     </div>
   `).join('');
+}
+// ── Toast notification system ───────────────────────────────
+
+// Inject toast element once
+const toastEl = document.createElement('div');
+toastEl.className = 'toast';
+document.body.appendChild(toastEl);
+
+let toastTimer;
+
+function showToast(message, type = 'success') {
+  clearTimeout(toastTimer);
+  toastEl.className = `toast toast--${type} show`;
+  toastEl.innerHTML = `<i class="ti ti-${type === 'success' ? 'circle-check' : 'alert-circle'}"></i> ${message}`;
+  toastTimer = setTimeout(() => toastEl.classList.remove('show'), 3000);
 }

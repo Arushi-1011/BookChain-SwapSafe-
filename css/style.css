@@ -1040,3 +1040,272 @@ body {
   color: var(--color-text-muted);
   line-height: 1.6;
 }
+/* ── Page Transitions ───────────────────────────── */
+.page {
+  animation: fadeUp 0.2s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Mobile Navbar ──────────────────────────────── */
+@media (max-width: 640px) {
+  .navbar {
+    padding: 0 16px;
+    flex-wrap: wrap;
+    height: auto;
+    gap: 0;
+  }
+
+  .navbar__logo {
+    padding: 12px 0;
+  }
+
+  .navbar__tabs {
+    order: 3;
+    width: 100%;
+    overflow-x: auto;
+    padding: 8px 0 10px;
+    gap: 4px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .navbar__tabs::-webkit-scrollbar { display: none; }
+
+  .navbar__tab {
+    padding: 6px 14px;
+    font-size: 13px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .navbar__right {
+    padding: 12px 0;
+  }
+}
+
+/* ── Mobile Pages ───────────────────────────────── */
+@media (max-width: 640px) {
+  .page {
+    padding: 20px 16px;
+  }
+
+  .browse-hero {
+    padding: 20px 16px;
+  }
+
+  .browse-hero__title {
+    font-size: 22px;
+  }
+
+  .stats-strip {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .stats-strip__item {
+    border-right: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .stats-strip__item:nth-child(2),
+  .stats-strip__item:nth-child(4) {
+    border-right: none;
+  }
+
+  .stats-strip__item:nth-child(3),
+  .stats-strip__item:nth-child(4) {
+    border-bottom: none;
+  }
+
+  .book-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .condition-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .swap-card__top {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .swap-arrow {
+    display: none;
+  }
+
+  .swap-tabs {
+    width: 100%;
+  }
+
+  .swap-tab {
+    flex: 1;
+    justify-content: center;
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+
+  .profile-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 18px;
+  }
+
+  .profile-stats {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .profile-stat__num {
+    font-size: 20px;
+  }
+
+  .profile-books {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+
+  .list-form {
+    max-width: 100%;
+  }
+
+  .submit-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .swap-actions {
+    flex-wrap: wrap;
+  }
+
+  .btn-accept,
+  .btn-message,
+  .btn-decline {
+    flex: 1 1 calc(50% - 5px);
+  }
+}
+
+/* ── Hover lift on stat cards ───────────────────── */
+.profile-stat {
+  transition: box-shadow 0.15s, transform 0.15s;
+}
+
+.profile-stat:hover {
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-2px);
+}
+
+/* ── Input focus ring ───────────────────────────── */
+.form-input:focus,
+.search-wrap__input:focus,
+.filter-select:focus {
+  box-shadow: 0 0 0 3px rgba(239, 159, 39, 0.15);
+}
+
+/* ── Smooth swap card hover ─────────────────────── */
+.swap-card {
+  transition: box-shadow 0.15s;
+}
+
+.swap-card:hover {
+  box-shadow: var(--shadow-sm);
+}
+
+/* ── Empty state for browse ─────────────────────── */
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 52px 20px;
+  color: var(--color-text-muted);
+}
+
+.empty-state__icon {
+  font-size: 40px;
+  margin-bottom: 12px;
+}
+
+.empty-state__title {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--color-text);
+  margin-bottom: 6px;
+}
+
+.empty-state__sub {
+  font-size: 14px;
+}
+
+/* ── Toast notification ─────────────────────────── */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--color-text);
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  box-shadow: var(--shadow-md);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transform: translateY(80px);
+  opacity: 0;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+  pointer-events: none;
+}
+
+.toast.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.toast--success { background: var(--color-teal); }
+.toast--error   { background: var(--color-coral); }
+
+/* ── Skeleton loader for book grid ──────────────── */
+.skeleton {
+  background: linear-gradient(90deg, var(--color-bg-soft) 25%, #e8e6df 50%, var(--color-bg-soft) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite;
+  border-radius: var(--radius-sm);
+}
+
+@keyframes shimmer {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}
+
+.book-card--skeleton .book-card__cover {
+  background: none;
+}
+
+.skeleton-cover {
+  width: 100%;
+  height: 120px;
+}
+
+.skeleton-line {
+  height: 13px;
+  margin-bottom: 8px;
+}
+
+.skeleton-line--short {
+  width: 60%;
+}
+
+/* ── Scrollbar styling ──────────────────────────── */
+::-webkit-scrollbar       { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-text-muted); }
