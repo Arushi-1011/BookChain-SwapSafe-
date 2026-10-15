@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BookChain — SwapSafe</title>
+  <meta name="description"
+  content="BookChain SwapSafe — free peer-to-peer textbook exchange for students." />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>" />
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/style.css" />
+
+  <!-- Icons (Tabler, free & lightweight) -->
+  <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap"
+    rel="stylesheet" />
+</head>
+<body>
+
+  <!-- App shell — we'll fill this in Phase 2 -->
+  <div id="app">
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="navbar__logo" role="button" tabindex="0" aria-label="BookChain home">
+      <div class="navbar__logo-icon">
+        <i class="ti ti-books"></i>
+      </div>
+      <div>
+        <div class="navbar__logo-text">BookChain</div>
+        <div class="navbar__logo-sub">SwapSafe</div>
+      </div>
+    </div>
+
+    <div class="navbar__tabs" id="nav-tabs">
+      <button class="navbar__tab active" data-page="browse">Browse</button>
+      <button class="navbar__tab" data-page="swaps">My Swaps</button>
+      <button class="navbar__tab" data-page="list">List a Book</button>
+      <button class="navbar__tab" data-page="profile">Profile</button>
+    </div>
+
+    <div class="navbar__right">
+      <button class="navbar__icon-btn" id="notifications-button" aria-label="Open swap requests" title="Swap requests">
+        <i class="ti ti-bell"></i>
+        <span class="navbar__notif-dot" id="navbar-notif-dot" hidden></span>
+      </button>
+      <button class="navbar__auth-btn" id="auth-button" type="button">Sign in</button>
+      <button class="navbar__avatar" id="navbar-avatar" type="button" aria-label="Open profile" title="Open profile">?</button>
+    </div>
+  </nav>
+
+  <!-- PAGES -->
+   <div id="page-browse" class="page active">
+
+  <!-- Hero -->
+  <div class="browse-hero">
+    <h1 class="browse-hero__title">Find your next textbook — free.</h1>
+    <p class="browse-hero__sub">Swap directly with fellow students. No middleman, no fees.</p>
+
+    <!-- Search + filter row -->
+    <div class="browse-search-row">
+      <div class="search-wrap">
+        <i class="ti ti-search search-wrap__icon"></i>
+        <input
+          type="text"
+          id="search-input"
+          class="search-wrap__input"
+          placeholder="Search by title, author, or subject…"
+        />
+      </div>
+      <select id="subject-filter" class="filter-select">
+        <option value="">All subjects</option>
+        <option>Computer Science</option>
+        <option>Mathematics</option>
+        <option>Physics</option>
+        <option>Biology</option>
+        <option>Economics</option>
+        <option>Engineering</option>
+        <option>Chemistry</option>
+        <option>Other</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Stats strip -->
+  <div class="stats-strip">
+    <div class="stats-strip__item">
+      <div class="stats-strip__num" id="stat-books">—</div>
+      <div class="stats-strip__lbl">available books</div>
+    </div>
+    <div class="stats-strip__item">
+      <div class="stats-strip__num" id="stat-students">—</div>
+      <div class="stats-strip__lbl">student accounts</div>
+    </div>
+    <div class="stats-strip__item">
+      <div class="stats-strip__num" id="stat-requests">—</div>
+      <div class="stats-strip__lbl">pending requests</div>
+    </div>
+    <div class="stats-strip__item">
+      <div class="stats-strip__num" id="stat-completed">—</div>
+      <div class="stats-strip__lbl">completed swaps</div>
+    </div>
+  </div>
+
+  <!-- Condition filter pills -->
+  <div class="browse-toolbar">
+    <div class="pills" id="condition-pills">
+      <button class="pill active" data-condition="">All</button>
+      <button class="pill" data-condition="like-new">Like New</button>
+      <button class="pill" data-condition="good">Good</button>
+      <button class="pill" data-condition="fair">Fair</button>
+    </div>
+  </div>
+
+  <!-- Book grid -->
+  <div class="book-grid" id="book-grid"></div>
+
+</div>
+  <div id="page-swaps" class="page">
+
+  <div class="swaps-header">
+    <h2 class="swaps-header__title">My Swaps</h2>
+    <p class="swaps-header__sub">Track all your incoming and outgoing book exchange requests.</p>
+  </div>
+
+  <!-- Tabs -->
+  <div class="swap-tabs" id="swap-tabs">
+    <button class="swap-tab active" data-tab="incoming">
+      Incoming <span class="swap-tab__count" id="incoming-count">0</span>
+    </button>
+    <button class="swap-tab" data-tab="outgoing">
+      Outgoing <span class="swap-tab__count" id="outgoing-count">0</span>
+    </button>
+    <button class="swap-tab" data-tab="completed">
+      Completed <span class="swap-tab__count" id="completed-count">0</span>
+    </button>
+  </div>
+
+  <!-- Swap cards rendered here -->
+  <div id="swaps-list"></div>
+
+</div>
+  <div id="page-list" class="page">
+
+  <div class="list-header">
+    <h2 class="list-header__title">List a Book</h2>
+    <p class="list-header__sub">Share a textbook you no longer need with another student.</p>
+  </div>
+
+  <!-- Success banner (hidden by default) -->
+  <div class="success-banner" id="success-banner">
+    <i class="ti ti-circle-check"></i>
+    <div>
+      <strong>Book listed successfully!</strong>
+      <p>Students can now find and request a swap.</p>
+    </div>
+  </div>
+
+  <form class="list-form" id="list-form">
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label" for="f-title">Book title <span class="required">*</span></label>
+        <input class="form-input" type="text" id="f-title" placeholder="e.g. Engineering Mathematics Vol. 1" />
+        <span class="form-error" id="err-title">Please enter the book title.</span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="f-author">Author <span class="required">*</span></label>
+        <input class="form-input" type="text" id="f-author" placeholder="e.g. H.K. Dass" />
+        <span class="form-error" id="err-author">Please enter the author name.</span>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label" for="f-subject">Subject <span class="required">*</span></label>
+        <select class="form-input" id="f-subject">
+          <option value="">Select a subject</option>
+          <option>Computer Science</option>
+          <option>Mathematics</option>
+          <option>Physics</option>
+          <option>Biology</option>
+          <option>Economics</option>
+          <option>Engineering</option>
+          <option>Chemistry</option>
+          <option>Other</option>
+        </select>
+        <span class="form-error" id="err-subject">Please select a subject.</span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="f-isbn">ISBN <span class="optional">(optional)</span></label>
+        <input class="form-input" type="text" id="f-isbn" placeholder="e.g. 978-8121903455" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Condition <span class="required">*</span></label>
+      <div class="condition-grid" id="condition-picker">
+        <div class="cond-option selected" data-value="like-new">
+          <div class="cond-option__icon">✨</div>
+          <div class="cond-option__name">Like New</div>
+          <div class="cond-option__desc">Minimal use, no marks</div>
+        </div>
+        <div class="cond-option" data-value="good">
+          <div class="cond-option__icon">📗</div>
+          <div class="cond-option__name">Good</div>
+          <div class="cond-option__desc">Some highlights or notes</div>
+        </div>
+        <div class="cond-option" data-value="fair">
+          <div class="cond-option__icon">📙</div>
+          <div class="cond-option__name">Fair</div>
+          <div class="cond-option__desc">Worn but fully readable</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="f-want">What do you want in return? <span class="optional">(optional)</span></label>
+      <input class="form-input" type="text" id="f-want" placeholder="e.g. Any CS or Maths book from 2nd year" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="f-notes">Notes <span class="optional">(optional)</span></label>
+      <textarea class="form-input form-textarea" id="f-notes"
+        placeholder="Campus, preferred meetup spot, extra details about the book…"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="f-campus">Your campus <span class="required">*</span></label>
+      <input class="form-input" type="text" id="f-campus" placeholder="e.g. IIT Bengaluru" />
+      <span class="form-error" id="err-campus">Please enter your campus.</span>
+    </div>
+
+    <button type="submit" class="submit-btn">
+      <i class="ti ti-plus"></i> List this book
+    </button>
+
+  </form>
+
+</div>
+  <div id="page-profile" class="page">
+
+  <!-- Profile header card -->
+  <div class="profile-card">
+    <div class="profile-card__avatar" id="profile-avatar"></div>
+    <div class="profile-card__info">
+      <div class="profile-card__name" id="profile-name"></div>
+      <div class="profile-card__sub" id="profile-sub"></div>
+      <div class="profile-card__trust" id="profile-trust"></div>
+    </div>
+    <button class="profile-edit-btn" id="edit-profile-button" type="button">
+      <i class="ti ti-pencil"></i> Edit profile
+    </button>
+  </div>
+
+  <!-- Stats row -->
+  <div class="profile-stats" id="profile-stats"></div>
+
+  <!-- My listed books -->
+  <div class="profile-section">
+    <div class="profile-section__title">My listed books</div>
+    <div class="profile-books" id="profile-books"></div>
+  </div>
+
+  <div class="profile-section profile-note">
+    <i class="ti ti-shield-check"></i>
+    <div>
+      <strong>Your BookChain profile</strong>
+      <p>Keep your campus details up to date so other students know where to arrange a safe hand-off.</p>
+    </div>
+  </div>
+
+</div>
+
+</div>
+
+  <!-- Authentication dialog -->
+  <dialog class="app-dialog" id="auth-dialog" aria-labelledby="auth-title">
+    <div class="dialog-panel">
+      <button class="dialog-close" type="button" data-close-dialog="auth-dialog" aria-label="Close"><i class="ti ti-x"></i></button>
+      <div class="dialog-brand-icon"><i class="ti ti-books"></i></div>
+      <h2 class="dialog-title" id="auth-title">Welcome back</h2>
+      <p class="dialog-subtitle" id="auth-subtitle">Sign in to manage your listings and swaps.</p>
+      <div class="auth-mode-switch" role="group" aria-label="Account action">
+        <button type="button" class="auth-mode active" data-auth-mode="login">Sign in</button>
+        <button type="button" class="auth-mode" data-auth-mode="register">Create account</button>
+      </div>
+      <form id="auth-form" class="dialog-form">
+        <div id="register-fields" hidden>
+          <div class="form-group">
+            <label class="form-label" for="auth-name">Full name</label>
+            <input class="form-input" id="auth-name" name="name" type="text" minlength="2" maxlength="60" autocomplete="name" placeholder="Your name">
+          </div>
+          <div class="form-row dialog-form-row">
+            <div class="form-group">
+              <label class="form-label" for="auth-year">Year</label>
+              <select class="form-input" id="auth-year" name="year">
+                <option>1st year</option><option>2nd year</option><option>3rd year</option><option>4th year</option><option>Graduate</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="auth-course">Course</label>
+              <input class="form-input" id="auth-course" name="course" type="text" maxlength="80" placeholder="e.g. Computer Science">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="auth-campus">College / campus</label>
+            <input class="form-input" id="auth-campus" name="campus" type="text" minlength="2" maxlength="100" placeholder="Your university" autocomplete="organization">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="auth-email">Email</label>
+          <input class="form-input" id="auth-email" name="email" type="email" autocomplete="email" required maxlength="254" placeholder="you@college.edu">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="auth-password">Password</label>
+          <input class="form-input" id="auth-password" name="password" type="password" autocomplete="current-password" required minlength="8" maxlength="128" placeholder="At least 8 characters">
+        </div>
+        <p class="dialog-error" id="auth-error" role="alert" hidden></p>
+        <button class="submit-btn dialog-submit" id="auth-submit" type="submit">Sign in</button>
+      </form>
+      <p class="dialog-footnote">Your password is hashed before it is stored. Never reuse a sensitive password for a student project demo.</p>
+    </div>
+  </dialog>
+
+  <!-- Request-swap dialog -->
+  <dialog class="app-dialog" id="swap-dialog" aria-labelledby="swap-dialog-title">
+    <div class="dialog-panel">
+      <button class="dialog-close" type="button" data-close-dialog="swap-dialog" aria-label="Close"><i class="ti ti-x"></i></button>
+      <div class="dialog-brand-icon"><i class="ti ti-arrows-exchange"></i></div>
+      <h2 class="dialog-title" id="swap-dialog-title">Request a swap</h2>
+      <p class="dialog-subtitle" id="swap-dialog-subtitle">Choose one of your available books to offer in return.</p>
+      <form id="swap-form" class="dialog-form">
+        <input type="hidden" id="swap-requested-book-id">
+        <div class="form-group">
+          <label class="form-label" for="swap-offered-book">Your book to offer</label>
+          <select class="form-input" id="swap-offered-book" required></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="swap-message">Message to the owner <span class="optional">(optional)</span></label>
+          <textarea class="form-input form-textarea" id="swap-message" maxlength="500" placeholder="Suggest a campus meetup or share a note..."></textarea>
+        </div>
+        <p class="dialog-error" id="swap-error" role="alert" hidden></p>
+        <button class="submit-btn dialog-submit" type="submit">Send swap request</button>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- Edit-profile dialog -->
+  <dialog class="app-dialog" id="profile-dialog" aria-labelledby="profile-dialog-title">
+    <div class="dialog-panel">
+      <button class="dialog-close" type="button" data-close-dialog="profile-dialog" aria-label="Close"><i class="ti ti-x"></i></button>
+      <div class="dialog-brand-icon"><i class="ti ti-user-edit"></i></div>
+      <h2 class="dialog-title" id="profile-dialog-title">Edit your profile</h2>
+      <p class="dialog-subtitle">Your campus details help students arrange book exchanges.</p>
+      <form id="profile-form" class="dialog-form">
+        <div class="form-group"><label class="form-label" for="profile-edit-name">Full name</label><input class="form-input" id="profile-edit-name" required minlength="2" maxlength="60"></div>
+        <div class="form-row dialog-form-row">
+          <div class="form-group"><label class="form-label" for="profile-edit-year">Year</label><input class="form-input" id="profile-edit-year" maxlength="40"></div>
+          <div class="form-group"><label class="form-label" for="profile-edit-course">Course</label><input class="form-input" id="profile-edit-course" maxlength="80"></div>
+        </div>
+        <div class="form-group"><label class="form-label" for="profile-edit-campus">College / campus</label><input class="form-input" id="profile-edit-campus" required minlength="2" maxlength="100"></div>
+        <p class="dialog-error" id="profile-error" role="alert" hidden></p>
+        <button class="submit-btn dialog-submit" type="submit">Save profile</button>
+      </form>
+    </div>
+  </dialog>
+
+  <script src="js/app.js" defer></script>
+</body>
+</html>
