@@ -1,189 +1,228 @@
+<div align="center">
+
 # BookChain — SwapSafe
 
-**A full-stack, peer-to-peer textbook exchange platform for students.** Browse books listed by other students, publish your own listing, propose a book-for-book exchange, and manage requests through to completion.
+### A student-first marketplace for swapping textbooks
 
-> BookChain started as a vanilla HTML/CSS/JavaScript prototype. This version keeps its original visual direction and adds a Node.js/Express API, MongoDB persistence, secure password hashing, cookie-based authentication, and real swap workflows.
+Find a book, list one you no longer need, and arrange a book-for-book exchange with another student.
+
+[**Live Demo**](https://bookchain-swapsafe.onrender.com) · [Repository](https://github.com/Arushi-1011/BookChain-SwapSafe-) · [Full-Stack Branch](https://github.com/Arushi-1011/BookChain-SwapSafe-/tree/fullstack-upgrade)
+
+![Node.js 20+](https://img.shields.io/badge/Node.js-20%2B-43853D?logo=node.js&logoColor=white)
+![Express.js](https://img.shields.io/badge/Express.js-REST%20API-000000?logo=express&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-Mongoose-47A248?logo=mongodb&logoColor=white)
+![Deployed on Render](https://img.shields.io/badge/Deployed-Render-46E3B7?logo=render&logoColor=black)
+
+</div>
+
+---
+
+## Overview
+
+**BookChain — SwapSafe** is a full-stack web application designed to help students discover, list, and exchange textbooks. The application started as a vanilla HTML/CSS/JavaScript prototype and now uses an Express REST API and MongoDB for persistent data.
+
+The core exchange flow is implemented: a signed-in student can offer one of their available books for another student's listing; the owner can accept or decline; and participants can track the request through its status changes.
+
+> **Project scope:** Despite the name, this version does not currently use a blockchain or smart contracts. Book listings, accounts, and swap states are stored in MongoDB. A verifiable on-chain exchange record is a possible future extension, not a current feature.
+
+## Live demo
+
+**[Open BookChain — SwapSafe](https://bookchain-swapsafe.onrender.com)**
+
+The live app is hosted on Render's free web-service tier. Free services may spin down when idle, so the first page load after a quiet period can take longer than usual.
+
+### Marketplace preview
+
+![BookChain marketplace showing search, subject filters, database-backed counts, and book listings](docs/screenshots/marketplace.png)
+
+*Marketplace UI populated with sample book listings for demonstration.*
 
 ## Features
 
-- **Marketplace:** browse available books; search by title, author, subject or campus; filter by subject and condition.
-- **Accounts:** register, sign in and sign out. Passwords are hashed with bcrypt; the signed session token is stored in an HTTP-only cookie.
-- **Persistent listings:** create, edit and delete your books. The API validates every listing and restricts edits/deletions to its owner.
-- **Book exchanges:** request a swap by offering one of your available books; owners can accept or decline; either participant can mark an accepted exchange complete.
-- **Swap dashboard:** incoming, outgoing and completed requests with status timelines.
-- **Student profile:** update course/year/campus details, view active listings and swap statistics, and manage your own listings.
-- **Live aggregate stats:** marketplace counts are calculated from the database instead of hard-coded numbers.
-- **Security foundations:** HTTP-only SameSite cookies, bcrypt password hashing, JWT expiry, Helmet security headers, request limits, server-side validation, and ownership checks.
-- **Responsive UI:** existing custom HTML/CSS/vanilla JavaScript interface; no frontend framework required.
-- **Automated model tests:** built-in Node.js test runner checks important database schema constraints.
+- **Discover books:** browse available listings and search by title, author, subject, or campus.
+- **Filter listings:** narrow results by subject and book condition.
+- **Account management:** register, sign in/out, and update student profile details.
+- **Book listing management:** create, edit, and delete your own available listings.
+- **Book-for-book swaps:** submit a request by offering one of your available books.
+- **Request lifecycle:** listing owners can accept or decline pending requests; requesters can cancel pending requests; participants can mark an accepted exchange complete.
+- **Availability management:** accepted exchanges reserve the two books; completed exchanges mark them as swapped.
+- **Personal dashboard:** review incoming, outgoing, and completed swap requests, plus listing and swap statistics.
+- **Database-backed metrics:** marketplace statistics are calculated from MongoDB rather than hard-coded counters.
+- **Responsive interface:** custom HTML, CSS, and vanilla JavaScript; no frontend framework required.
 
 ## Tech stack
 
-| Layer | Technology |
-|---|---|
-| Frontend | HTML5, CSS3, vanilla JavaScript |
-| Backend | Node.js, Express.js, REST API |
-| Database | MongoDB with Mongoose |
-| Authentication | bcryptjs + JWT in an HTTP-only cookie |
-| Security | Helmet, express-rate-limit, server-side validation |
-| Testing | Node.js built-in test runner |
-| Tooling | npm, Git, GitHub |
+| Layer | Technology | Purpose |
+|---|---|---|
+| Frontend | HTML5, CSS3, vanilla JavaScript | Marketplace interface and browser interactions |
+| Backend | Node.js, Express.js | Same-origin REST API and application logic |
+| Database | MongoDB, Mongoose | Persistent users, book listings, and swap requests |
+| Authentication | bcryptjs, JSON Web Tokens | Password hashing and signed sessions in an HTTP-only cookie |
+| Security | Helmet, express-rate-limit, server-side validation | Security headers, request limits, and input/permission checks |
+| Tests | Node.js built-in test runner | Model/schema validation tests |
+| Deployment | Render + MongoDB Atlas | Hosted application and managed database |
 
-## Project structure
+## Architecture
 
-```text
-BookChain-SwapSafe/
-├── public/
-│   ├── index.html
-│   ├── css/
-│   │   ├── reset.css
-│   │   └── style.css
-│   └── js/
-│       └── app.js
-├── models/
-│   ├── User.js
-│   ├── Book.js
-│   └── SwapRequest.js
-├── routes/
-│   ├── auth.js
-│   ├── books.js
-│   └── swaps.js
-├── middleware/
-│   └── auth.js
-├── scripts/
-│   └── seed.js
-├── tests/
-│   └── models.test.js
-├── .env.example
-├── .gitignore
-├── package.json
-└── server.js
+```mermaid
+flowchart TD
+    Browser[Browser UI<br/>HTML · CSS · JavaScript] <-->|HTTP / JSON| Express[Node.js + Express API]
+    Express --> Auth[Authentication middleware<br/>HTTP-only cookie + JWT]
+    Express --> Routes[Auth · Books · Swaps routes]
+    Auth --> Routes
+    Routes --> Models[Mongoose models<br/>User · Book · SwapRequest]
+    Models <--> DB[(MongoDB Atlas)]
 ```
+
+The frontend and API are served from the same Express application. Protected endpoints read the `bookchain_token` HTTP-only cookie, verify the session, and enforce ownership and state-transition rules on the server.
 
 ## Run locally
 
-### Requirements
+### Prerequisites
 
 - Node.js 20 or newer
 - npm
-- A MongoDB database. MongoDB Atlas is the easiest option; a local MongoDB instance also works.
+- A MongoDB database (MongoDB Atlas is the easiest option)
 
-### 1. Install dependencies
+### 1. Clone the repository
 
 ```bash
-npm install
+git clone --branch fullstack-upgrade https://github.com/Arushi-1011/BookChain-SwapSafe-.git
+cd BookChain-SwapSafe-
 ```
 
-### 2. Configure environment variables
+### 2. Install dependencies
 
-Copy `.env.example` to `.env` and replace the placeholders:
+```bash
+npm ci
+```
+
+### 3. Configure environment variables
+
+Create a local `.env` file from the example:
 
 ```bash
 cp .env.example .env
 ```
 
-Set:
+Set the values in `.env`:
 
-- `MONGODB_URI` — your MongoDB Atlas connection string (or local MongoDB URI)
-- `JWT_SECRET` — a long random string of at least 32 characters
-- `PORT` — optional; defaults to `3000`
-- `NODE_ENV` — use `development` locally and `production` when deployed behind HTTPS
+```env
+MONGODB_URI=your_mongodb_connection_string
+JWT_SECRET=replace_with_a_random_secret_of_at_least_32_characters
+PORT=3000
+NODE_ENV=development
+```
 
-**Never commit `.env` or share your database credentials / JWT secret.** In Atlas, create a database user and allow network access from your development machine. Use a least-privilege database user.
+- `MONGODB_URI`: connection string for your own development database.
+- `JWT_SECRET`: unique, random secret of at least 32 characters.
+- `PORT`: optional local port; defaults to `3000`.
+- `NODE_ENV`: use `development` locally and `production` when deployed behind HTTPS.
 
-### 3. Add sample marketplace books (optional)
+Never commit `.env`, send database credentials in screenshots, or expose your JWT secret. The repository's `.gitignore` excludes `.env`.
+
+### 4. Seed optional sample data
 
 ```bash
 npm run seed
 ```
 
-The seed script adds example books under `demo@bookchain.local` only when that demo user has no existing books. The default local demo password is `DemoBookChain2026!`; you can override it with `SEED_DEMO_PASSWORD` before running the seed command. This account is for local demonstration only—change or remove it before any public deployment. Do not run the demo seed against a production database.
+The seed script creates a local demo user and adds eight sample listings if that demo user has no books yet. It prints the demo credentials in the terminal. This is **development-only**: use your own `SEED_DEMO_PASSWORD` if needed, and **never run `npm run seed` against the production database**.
 
-### 4. Start the server
+### 5. Start the application
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). The Express server serves the frontend and API from the same origin, so no separate frontend server or CORS configuration is needed.
+Open [http://localhost:3000](http://localhost:3000). The Express server serves both the frontend and API, so a separate frontend server is not required.
 
-### 5. Run checks
+### 6. Run checks and tests
 
 ```bash
 npm run check
 npm test
 ```
 
-`npm run check` validates JavaScript syntax. `npm test` runs model validation tests; it does not require a live MongoDB connection.
+- `npm run check` runs Node.js syntax checks on the server, route files, and browser JavaScript.
+- `npm test` runs model validation tests using Node's built-in test runner. These tests do not require a live database; they are not a substitute for route-level integration tests.
 
-## API overview
+## REST API overview
 
-All endpoints return JSON. Protected endpoints expect the HTTP-only `bookchain_token` cookie created during sign-in.
+All endpoints return JSON. Protected routes require the signed-in user's `bookchain_token` cookie.
 
-### Authentication
+### Authentication — `/api/auth`
 
-| Method | Endpoint | Purpose |
+| Method | Endpoint | Description |
 |---|---|---|
-| `POST` | `/api/auth/register` | Create an account and start a session |
-| `POST` | `/api/auth/login` | Sign in |
-| `POST` | `/api/auth/logout` | Clear the session cookie |
-| `GET` | `/api/auth/me` | Get current user |
-| `PATCH` | `/api/auth/profile` | Update the user's profile |
-| `GET` | `/api/auth/profile/stats` | Get personal listing/swap stats |
+| `POST` | `/register` | Create account and start a session |
+| `POST` | `/login` | Authenticate and start a session |
+| `POST` | `/logout` | Clear the session cookie |
+| `GET` | `/me` | Get the current user |
+| `PATCH` | `/profile` | Update profile details |
+| `GET` | `/profile/stats` | Get current user's listing/swap statistics |
 
-### Books
+### Books — `/api/books`
 
-| Method | Endpoint | Purpose |
+| Method | Endpoint | Description |
 |---|---|---|
-| `GET` | `/api/books` | Browse and filter available books |
-| `GET` | `/api/books?mine=true` | Get the signed-in user's listings |
-| `POST` | `/api/books` | Create a listing |
-| `PATCH` | `/api/books/:id` | Update an owned listing |
-| `DELETE` | `/api/books/:id` | Delete an available owned listing |
+| `GET` | `/` | Browse available books; supports `q`, `subject`, and `condition` filters |
+| `GET` | `/?mine=true` | View the current user's own listings (authentication required) |
+| `POST` | `/` | Create a listing |
+| `PATCH` | `/:id` | Update an owned, available listing |
+| `DELETE` | `/:id` | Delete an eligible owned listing |
 
-Query parameters for `GET /api/books` include `q`, `subject`, `condition` and `mine=true`.
+### Swaps — `/api/swaps`
 
-### Swaps
-
-| Method | Endpoint | Purpose |
+| Method | Endpoint | Description |
 |---|---|---|
-| `GET` | `/api/swaps?tab=incoming` | Incoming pending/accepted requests |
-| `GET` | `/api/swaps?tab=outgoing` | Requests sent by the current user |
-| `GET` | `/api/swaps?tab=completed` | Completed exchanges |
-| `GET` | `/api/swaps/summary` | Request counts for tabs/notifications |
-| `POST` | `/api/swaps` | Request a swap by offering one of your books |
-| `PATCH` | `/api/swaps/:id/status` | Accept, decline, cancel or complete a request (subject to permissions) |
+| `GET` | `/` | List requests; supports `tab=incoming`, `tab=outgoing`, or `tab=completed` |
+| `GET` | `/summary` | Counts for the current user's request tabs |
+| `POST` | `/` | Request a swap by offering one of the current user's books |
+| `PATCH` | `/:id/status` | Accept, decline, cancel, or complete a request subject to permissions and current status |
 
-### Utility
+### Utilities
 
-- `GET /api/health` — health check
-- `GET /api/stats` — live marketplace counts
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/health` | API health response |
+| `GET` | `/api/stats` | Database-backed marketplace counts |
 
-## Data model
+## Data models
 
-- **User:** identity, unique email, password hash, year, course, campus.
-- **Book:** title, author, subject, condition, ISBN, notes, campus, owner and availability state.
-- **SwapRequest:** requested book, offered book, requester, owner, status and timestamps.
+- **User:** name, unique email, password hash, course/year/campus profile fields, and timestamps.
+- **Book:** title, author, subject, condition, ISBN, notes, campus, owner, availability state, and timestamps.
+- **SwapRequest:** requested book, offered book, requester, owner, status, message, and response/completion timestamps.
 
-Accepted swaps reserve both books; completing a swap marks both as swapped so they are no longer available in the marketplace.
+## Security and engineering decisions
 
-## Design / engineering decisions
+- Passwords are hashed with bcrypt; plain-text passwords are not stored in the User model.
+- JWT sessions are held in an HTTP-only, `SameSite=Lax` cookie; the cookie is marked `Secure` in production.
+- Helmet adds security headers, and rate limiting is applied to API traffic and authentication attempts.
+- Input validation runs server-side; listing updates/deletions and swap status changes check permissions on the server.
+- Swap requests validate book ownership, availability, and eligible state transitions.
+- Environment-specific configuration is supplied through `.env` locally and service environment variables in production.
 
-- The existing custom UI was retained instead of rewriting the frontend in React solely to change frameworks.
-- The API and frontend run on one origin to keep local development simple and avoid unnecessary CORS configuration.
-- Authentication uses an HTTP-only cookie rather than exposing the JWT to frontend JavaScript.
-- Marketplace counts are read from MongoDB; they are not presented as invented usage metrics.
-- The API—not just the browser—enforces listing ownership and swap state transitions.
+## Deployment notes
 
-## Current scope and future improvements
+The live demo is deployed on Render and uses MongoDB Atlas.
 
-- Add integration tests that exercise routes against a dedicated test database.
-- Add atomic transactions for simultaneous swap acceptance and cancellation edge cases.
-- Add a mutual completion confirmation step before permanently completing an exchange.
-- Add optional cover-photo uploads, in-app messaging, email notifications and moderation tools.
-- Consider a blockchain-based proof of completed swaps as a separate layer. Core user data and book listings do not need to be on-chain.
-- Deploy the API and database with HTTPS, a production secret, and no public demo account.
+For a new deployment, configure these environment variables in the host dashboard:
+
+- `MONGODB_URI` — a production database connection string and least-privilege database user.
+- `JWT_SECRET` — a unique random secret; do not reuse your local value.
+- `NODE_ENV=production`.
+
+Use the platform-provided `PORT`. Configure Atlas Network Access to allow the hosting service's required outbound IP ranges. Never deploy using the local demo account or run the seed script against production data.
+
+## Roadmap
+
+- Add route-level integration tests using a dedicated test database.
+- Make swap acceptance and cancellation atomic for concurrency edge cases.
+- Add mutual completion confirmation for exchanges.
+- Add optional book-cover uploads, in-app messaging, and notifications.
+- Explore verifiable blockchain receipts for completed swaps as a separate, optional layer.
 
 ## Author
 
-**Arushi Srivastava** · [GitHub](https://github.com/Arushi-1011)
+**Arushi Srivastava** · [GitHub profile](https://github.com/Arushi-1011)
