@@ -6,7 +6,7 @@
 
 Find a book, list one you no longer need, and arrange a book-for-book exchange with another student.
 
-[**Live Demo**](https://bookchain-swapsafe.onrender.com) · [Repository](https://github.com/Arushi-1011/BookChain-SwapSafe-) · [Full-Stack Branch](https://github.com/Arushi-1011/BookChain-SwapSafe-/tree/fullstack-upgrade)
+[**Live Demo**](https://bookchain-swapsafe.onrender.com/) · [Repository](https://github.com/Arushi-1011/BookChain-SwapSafe-) · [Full-Stack Branch](https://github.com/Arushi-1011/BookChain-SwapSafe-/tree/fullstack-upgrade)
 
 ![Node.js 20+](https://img.shields.io/badge/Node.js-20%2B-43853D?logo=node.js&logoColor=white)
 ![Express.js](https://img.shields.io/badge/Express.js-REST%20API-000000?logo=express&logoColor=white)
