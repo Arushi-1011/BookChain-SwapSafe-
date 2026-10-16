@@ -1,6 +1,7 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const crypto = require('node:crypto');
 const User = require('../models/User');
 const Book = require('../models/Book');
 
@@ -16,12 +17,15 @@ const demoBooks = [
 ];
 
 async function main() {
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('Refusing to seed when NODE_ENV=production. Use a development database.');
+  }
   if (!process.env.MONGODB_URI) throw new Error('Set MONGODB_URI in .env before seeding.');
   await mongoose.connect(process.env.MONGODB_URI);
   const email = 'demo@bookchain.local';
   let demoUser = await User.findOne({ email });
   if (!demoUser) {
-    const demoPassword = process.env.SEED_DEMO_PASSWORD || 'DemoBookChain2026!';
+    const demoPassword = process.env.SEED_DEMO_PASSWORD || crypto.randomBytes(24).toString('base64url');
     demoUser = await User.create({
       name: 'BookChain Demo', email,
       passwordHash: await bcrypt.hash(demoPassword, 12),
@@ -29,7 +33,10 @@ async function main() {
     });
     console.log(`Created a local demo account: ${email}`);
     console.log(`Demo password: ${demoPassword}`);
-    console.log('Do not keep this public demo account on a live production deployment.');
+    if (!process.env.SEED_DEMO_PASSWORD) {
+      console.log('Generated a random local demo password. Save it if you need to log in again.');
+    }
+    console.log('Demo credentials are for local development only.');
   }
   const existingCount = await Book.countDocuments({ owner: demoUser._id });
   if (existingCount === 0) {

@@ -8,10 +8,12 @@
     "start": "node server.js",
     "dev": "node --watch server.js",
     "seed": "node scripts/seed.js",
-    "check": "node --check server.js && node --check routes/auth.js && node --check routes/books.js && node --check routes/swaps.js && node --check public/js/app.js",
+    "check": "node --check server.js && node --check routes/auth.js && node --check routes/books.js && node --check routes/swaps.js && node --check public/js/app.js && node --check scripts/seed.js",
     "test": "node --test"
   },
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "cookie-parser": "^1.4.7",
