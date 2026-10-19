@@ -73,7 +73,7 @@ The frontend and API are served by the same Express application. Protected route
 
 ### Requirements
 
-- Node.js 22 or newer (the package supports Node.js 20+)
+- Node.js 22 or newer
 - npm
 - A MongoDB database; MongoDB Atlas is one option
 
